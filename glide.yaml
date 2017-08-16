@@ -1,0 +1,4 @@
+package: github.com/tthanh/yoblog
+import:
+- package: github.com/lib/pq
+- package: github.com/jmoiron/sqlx
