@@ -8,3 +8,8 @@ type User struct {
 	CreatedAt int
 	UpdatedAt int
 }
+
+// UserStore inteface
+type UserStore interface {
+	Create(user *User) (userID string, err error)
+}

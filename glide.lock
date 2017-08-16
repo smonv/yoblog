@@ -1,6 +1,8 @@
-hash: 97c8d1f8d5219139fc0055ce277ddf42e167eeb7292d039608faf8ea2e57faa1
-updated: 2017-08-16T16:15:00.316921075+07:00
+hash: ab32269b247835dbee124d1f65a20b86acf71f486052546acd99987db6aed53e
+updated: 2017-08-16T20:47:19.042981294+07:00
 imports:
+- name: github.com/gorilla/mux
+  version: bcd8bc72b08df0f70df986b97f95590779502d31
 - name: github.com/jmoiron/sqlx
   version: d9bd385d68c068f1fabb5057e3dedcbcbb039d0f
 - name: github.com/lib/pq
