@@ -9,6 +9,7 @@ import (
 
 var (
 	accountStore AccountStore
+	postStore    PostStore
 )
 
 func init() {
@@ -18,4 +19,5 @@ func init() {
 	}
 
 	accountStore = NewAccountStore(db)
+	postStore = NewPostStore(db)
 }
