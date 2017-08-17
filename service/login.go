@@ -95,5 +95,29 @@ func (s Service) CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	session, err := s.cookieStore.Get(r, "yoblog")
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	session.Values["user_id"] = account.ID
+
+	session.Save(r, w)
+
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+}
+
+func (s Service) isAuthenticated(r *http.Request) bool {
+	session, err := s.cookieStore.Get(r, "yoblog")
+	if err != nil {
+		return false
+	}
+
+	if session.Values["user_id"] == "" {
+		return false
+	}
+
+	return true
 }

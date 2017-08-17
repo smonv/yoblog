@@ -34,15 +34,18 @@ func main() {
 
 	accountStore := postgres.NewAccountStore(db)
 
-	service := service.New(accountStore)
+	srv, err := service.New(
+		service.SetAccountStore(accountStore),
+		service.SetCookieStore([]byte("secret")),
+	)
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", service.IndexHandler).Methods("GET")
-	r.HandleFunc("/login", service.LoginHandler).Methods("GET")
-	r.HandleFunc("/callback", service.CallbackHandler).Methods("GET")
+	r.HandleFunc("/", srv.IndexHandler).Methods("GET")
+	r.HandleFunc("/login", srv.LoginHandler).Methods("GET")
+	r.HandleFunc("/callback", srv.CallbackHandler).Methods("GET")
 
-	srv := &http.Server{
+	httpSrv := &http.Server{
 		Handler: r,
 		Addr:    "127.0.0.1:8080",
 
@@ -50,5 +53,5 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	log.Fatal(srv.ListenAndServe())
+	log.Fatal(httpSrv.ListenAndServe())
 }
