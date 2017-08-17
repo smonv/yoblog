@@ -1,5 +1,0 @@
-export OAUTH2_CLIENT_ID="1943526969221067"
-export OAUTH2_CLIENT_SECRET="226c84c4f865b0844956c4359e611d03"
-export OAUTH2_REDIRECT_URL="http://localhost:8080/callback"
-export OAUTH2_SCOPE="public_profile,email"
-export OAUTH2_STATE="77f68462-bb59-4b0d-bcf5-6782f2594ca1"

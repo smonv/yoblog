@@ -1,0 +1,10 @@
+{{define "posts"}}
+{{template "header" .}}
+<div class="container">
+	{{range .posts}}
+	<h1>{{.Title}}</h1>
+	<p>{{.Content}}</p>
+	{{end}}
+</div>
+{{template "footer" .}}
+{{end}}

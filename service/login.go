@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -10,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/tthanh/yoblog"
-	"golang.org/x/oauth2"
 )
 
 // LoginHandler handle Get /login
@@ -60,7 +60,10 @@ func (s Service) CallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	session.Values["user_id"] = account.ID
 
-	session.Save(r, w)
+	err = session.Save(r, w)
+	if err != nil {
+		log.Println(err)
+	}
 
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
@@ -93,7 +96,7 @@ func (s Service) getFacebookAccount(r *http.Request) (*yoblog.Account, error) {
 
 	code := r.FormValue("code")
 
-	token, err := s.oauth2Config.Exchange(oauth2.NoContext, code)
+	token, err := s.oauth2Config.Exchange(context.TODO(), code)
 	if err != nil {
 		return nil, err
 	}
@@ -121,15 +124,15 @@ func (s Service) getFacebookAccount(r *http.Request) (*yoblog.Account, error) {
 	return &account, nil
 }
 
-func (s Service) isAuthenticated(r *http.Request) bool {
+func (s Service) isAuthenticated(r *http.Request) (bool, string) {
 	session, err := s.cookieStore.Get(r, s.cookieName)
 	if err != nil {
-		return false
+		return false, ""
 	}
 
 	if v, ok := session.Values["user_id"]; !ok || v == "" {
-		return false
+		return false, ""
 	}
 
-	return true
+	return true, session.Values["user_id"].(string)
 }
