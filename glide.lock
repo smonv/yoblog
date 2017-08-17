@@ -1,10 +1,18 @@
-hash: ab32269b247835dbee124d1f65a20b86acf71f486052546acd99987db6aed53e
-updated: 2017-08-16T20:47:19.042981294+07:00
+hash: 6bb721cd878e057dc2ee2eb580e9afeef9da98aafcc04cb7c82d5e304bf76794
+updated: 2017-08-17T08:25:25.379925705+07:00
 imports:
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
   version: bcd8bc72b08df0f70df986b97f95590779502d31
 - name: github.com/jmoiron/sqlx
   version: d9bd385d68c068f1fabb5057e3dedcbcbb039d0f
+  subpackages:
+  - reflectx
 - name: github.com/lib/pq
   version: e42267488fe361b9dc034be7a6bffef5b195bceb
+  subpackages:
+  - oid
+- name: github.com/Pallinder/go-randomdata
+  version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
 testImports: []
