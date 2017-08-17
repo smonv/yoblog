@@ -6,6 +6,7 @@ import (
 	"time"
 
 	randomdata "github.com/Pallinder/go-randomdata"
+	uuid "github.com/satori/go.uuid"
 	"github.com/tthanh/yoblog"
 )
 
@@ -13,6 +14,7 @@ func Test_Account(t *testing.T) {
 	now := time.Now()
 
 	account := &yoblog.Account{
+		ID:        uuid.NewV4().String(),
 		Email:     randomdata.Email(),
 		Name:      randomdata.FirstName(randomdata.Female),
 		CreatedAt: now.Unix(),
@@ -29,14 +31,23 @@ func Test_Account(t *testing.T) {
 	})
 
 	t.Run("GetByID", func(t *testing.T) {
-		_account, err := accountStore.GetByID(account.ID)
-		if err != nil {
-			t.Fatal(err)
-		}
+		t.Run("Valid", func(t *testing.T) {
+			_account, err := accountStore.GetByID(account.ID)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		if !reflect.DeepEqual(*account, _account) {
-			t.Fatalf("Mismatch: %v != %v", account, _account)
-		}
+			if !reflect.DeepEqual(*account, _account) {
+				t.Fatalf("Mismatch: %v != %v", account, _account)
+			}
+		})
+
+		t.Run("Invalid", func(t *testing.T) {
+			_, err := accountStore.GetByID(uuid.NewV4().String())
+			if err == nil {
+				t.Fatal("Expected error")
+			}
+		})
 	})
 
 	t.Run("Delete", func(t *testing.T) {
