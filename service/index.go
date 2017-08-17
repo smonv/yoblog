@@ -6,7 +6,7 @@ import (
 )
 
 // IndexHandler handle GET /
-func (s *Service) IndexHandler(w http.ResponseWriter, r *http.Request) {
+func (s Service) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("view/index.html")
 
 	t.Execute(w, nil)

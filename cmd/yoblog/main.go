@@ -15,8 +15,8 @@ import (
 
 var schema = `
 CREATE TABLE IF NOT EXISTS account (
-	id SERIAL PRIMARY KEY,
-	email VARCHAR(50) NOT NULL UNIQUE,
+	id CHAR(36) PRIMARY KEY,
+	email VARCHAR(50) UNIQUE,
 	name VARCHAR(50) NOT NULL,
 	created_at INTEGER,
 	updated_at INTEGER
@@ -39,6 +39,8 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", service.IndexHandler).Methods("GET")
+	r.HandleFunc("/login", service.LoginHandler).Methods("GET")
+	r.HandleFunc("/callback", service.CallbackHandler).Methods("GET")
 
 	srv := &http.Server{
 		Handler: r,
