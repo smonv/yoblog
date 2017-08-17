@@ -25,6 +25,15 @@ CREATE TABLE IF NOT EXISTS account (
 	created_at INTEGER,
 	updated_at INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS post (
+	id CHAR(36) PRIMARY KEY,
+	owner_id CHAR(36) REFERENCES account (id),
+	title VARCHAR(254),
+	content TEXT,
+	created_at INTEGER,
+	updated_at INTEGER
+)
 `
 
 func main() {
