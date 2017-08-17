@@ -49,6 +49,7 @@ func main() {
 	db.MustExec(schema)
 
 	accountStore := postgres.NewAccountStore(db)
+	postStore := postgres.NewPostStore(db)
 
 	oauth2ClientID := os.Getenv("OAUTH2_CLIENT_ID")
 	oauth2ClientSecret := os.Getenv("OAUTH2_CLIENT_SECRET")
@@ -66,11 +67,16 @@ func main() {
 
 	srv, err := service.New(
 		service.SetAccountStore(accountStore),
+		service.SetPostStore(postStore),
 		service.SetCookieStore([]byte("secret")),
 		service.SetCookieName("yoblog"),
 		service.SetOAuth2Config(oauth2Config),
 		service.SetOAuth2State(oauth2State),
 	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	r := mux.NewRouter()
 
@@ -78,6 +84,9 @@ func main() {
 	r.HandleFunc("/login", srv.LoginHandler).Methods("GET")
 	r.HandleFunc("/callback", srv.CallbackHandler).Methods("GET")
 	r.HandleFunc("/logout", srv.LogoutHandler).Methods("GET")
+	r.HandleFunc("/accounts/{aid}/posts", srv.AccountPostsHandler).Methods("GET")
+	r.HandleFunc("/posts/create", srv.NewPostHandler).Methods("GET")
+	r.HandleFunc("/posts/create", srv.CreatePostHandler).Methods("POST")
 
 	httpSrv := &http.Server{
 		Handler: r,

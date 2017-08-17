@@ -11,8 +11,10 @@ import (
 // Service represent internal service
 type Service struct {
 	accountStore yoblog.AccountStore
-	cookieStore  *sessions.CookieStore
-	cookieName   string
+	postStore    yoblog.PostStore
+
+	cookieStore *sessions.CookieStore
+	cookieName  string
 
 	oauth2Config *oauth2.Config
 	oauth2State  string
@@ -38,6 +40,8 @@ func New(options ...func(*Service) error) (*Service, error) {
 		"view/header.tmpl",
 		"view/footer.tmpl",
 		"view/index.html",
+		"view/posts.html",
+		"view/new_post.html",
 	)
 	if err != nil {
 		return nil, err
@@ -50,6 +54,13 @@ func New(options ...func(*Service) error) (*Service, error) {
 func SetAccountStore(accountStore yoblog.AccountStore) func(*Service) error {
 	return func(s *Service) error {
 		s.accountStore = accountStore
+		return nil
+	}
+}
+
+func SetPostStore(postStore yoblog.PostStore) func(s *Service) error {
+	return func(s *Service) error {
+		s.postStore = postStore
 		return nil
 	}
 }
