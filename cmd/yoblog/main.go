@@ -83,10 +83,10 @@ func main() {
 	r.HandleFunc("/", srv.IndexHandler).Methods("GET")
 	r.HandleFunc("/login", srv.LoginHandler).Methods("GET")
 	r.HandleFunc("/callback", srv.CallbackHandler).Methods("GET")
-	r.HandleFunc("/logout", srv.LogoutHandler).Methods("GET")
-	r.HandleFunc("/accounts/{aid}/posts", srv.AccountPostsHandler).Methods("GET")
-	r.HandleFunc("/posts/create", srv.NewPostHandler).Methods("GET")
-	r.HandleFunc("/posts/create", srv.CreatePostHandler).Methods("POST")
+	r.HandleFunc("/logout", service.RequireAuthentication(srv, srv.LogoutHandler)).Methods("GET")
+	r.HandleFunc("/accounts/{aid}/posts", service.RequireAuthentication(srv, srv.AccountPostsHandler)).Methods("GET")
+	r.HandleFunc("/posts/create", service.RequireAuthentication(srv, srv.NewPostHandler)).Methods("GET")
+	r.HandleFunc("/posts/create", service.RequireAuthentication(srv, srv.CreatePostHandler)).Methods("POST")
 
 	httpSrv := &http.Server{
 		Handler: r,

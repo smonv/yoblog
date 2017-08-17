@@ -30,6 +30,7 @@ func Test_Post(t *testing.T) {
 
 	post := &yoblog.Post{
 		OwnerID:   account.ID,
+		OwnerName: account.Name,
 		Title:     "Test Title",
 		Content:   "Test Content",
 		CreatedAt: now.Unix(),
@@ -62,6 +63,16 @@ func Test_Post(t *testing.T) {
 		}
 		if len(posts) != 1 {
 			t.Fatalf("Expected 1. Got %d", len(posts))
+		}
+	})
+
+	t.Run("GetAll", func(t *testing.T) {
+		posts, err := postStore.GetAll()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(posts) == 0 {
+			t.Fatalf("Expected not empty")
 		}
 	})
 

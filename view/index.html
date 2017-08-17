@@ -2,6 +2,11 @@
 {{template "header" .}}
 <div class="container">
 	<h1>YoBlog</h1>
+	{{range .posts}}
+	<h1>{{.Title}}</h1>
+	<h6>Author: {{.OwnerName}}</h6>
+	<p>{{.Content}}</p>
+	{{end}}
 </div>
 {{template "footer" .}}
 {{end}}

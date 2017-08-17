@@ -2,6 +2,7 @@ package service
 
 import (
 	"html/template"
+	"net/http"
 
 	"github.com/gorilla/sessions"
 	"github.com/tthanh/yoblog"
@@ -94,5 +95,17 @@ func SetOAuth2State(state string) func(*Service) error {
 	return func(s *Service) error {
 		s.oauth2State = state
 		return nil
+	}
+}
+
+func RequireAuthentication(s *Service, next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		isAuthenticated, _ := s.isAuthenticated(r)
+		if !isAuthenticated {
+			http.Redirect(w, r, "/", http.StatusForbidden)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	}
 }

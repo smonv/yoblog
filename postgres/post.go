@@ -60,13 +60,27 @@ func (s PostStore) Create(post *yoblog.Post) (postID string, err error) {
 }
 
 func (s PostStore) GetByID(id string) (post yoblog.Post, err error) {
-	err = s.db.Get(&post, "SELECT * FROM post WHERE id = $1", id)
+	err = s.db.Get(
+		&post,
+		"SELECT account.name, post.* FROM post INNER JOIN account ON post.owner_id = account.id WHERE post.id = $1",
+		id,
+	)
 
 	return
 }
 
 func (s PostStore) GetByOwnerID(ownerID string) (posts []yoblog.Post, err error) {
-	err = s.db.Select(&posts, "SELECT * FROM post WHERE owner_id = $1", ownerID)
+	err = s.db.Select(
+		&posts,
+		"SELECT account.name, post.* FROM post INNER JOIN account ON post.owner_id = account.id WHERE post.owner_id = $1",
+		ownerID,
+	)
+
+	return
+}
+
+func (s PostStore) GetAll() (posts []yoblog.Post, err error) {
+	err = s.db.Select(&posts, "SELECT account.name, post.* FROM post INNER JOIN account ON post.owner_id = account.id")
 
 	return
 }
