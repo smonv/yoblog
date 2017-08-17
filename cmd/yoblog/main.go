@@ -44,6 +44,7 @@ func main() {
 	r.HandleFunc("/", srv.IndexHandler).Methods("GET")
 	r.HandleFunc("/login", srv.LoginHandler).Methods("GET")
 	r.HandleFunc("/callback", srv.CallbackHandler).Methods("GET")
+	r.HandleFunc("/logout", srv.LogoutHandler).Methods("GET")
 
 	httpSrv := &http.Server{
 		Handler: r,
