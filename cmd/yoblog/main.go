@@ -3,9 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	_ "github.com/lib/pq"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/facebook"
 
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
@@ -28,15 +32,35 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+
+	defer func() {
+		_ = db.Close()
+	}()
 
 	db.MustExec(schema)
 
 	accountStore := postgres.NewAccountStore(db)
 
+	oauth2ClientID := os.Getenv("OAUTH2_CLIENT_ID")
+	oauth2ClientSecret := os.Getenv("OAUTH2_CLIENT_SECRET")
+	oauth2RedirectURL := os.Getenv("OAUTH2_REDIRECT_URL")
+	oauth2Scopes := strings.Split(os.Getenv("OAUTH2_SCOPE"), ",")
+	oauth2State := os.Getenv("OAUTH2_STATE")
+
+	oauth2Config := &oauth2.Config{
+		ClientID:     oauth2ClientID,
+		ClientSecret: oauth2ClientSecret,
+		RedirectURL:  oauth2RedirectURL,
+		Scopes:       oauth2Scopes,
+		Endpoint:     facebook.Endpoint,
+	}
+
 	srv, err := service.New(
 		service.SetAccountStore(accountStore),
 		service.SetCookieStore([]byte("secret")),
+		service.SetCookieName("yoblog"),
+		service.SetOAuth2Config(oauth2Config),
+		service.SetOAuth2State(oauth2State),
 	)
 
 	r := mux.NewRouter()

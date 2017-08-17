@@ -5,13 +5,19 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/tthanh/yoblog"
+	"golang.org/x/oauth2"
 )
 
 // Service represent internal service
 type Service struct {
 	accountStore yoblog.AccountStore
 	cookieStore  *sessions.CookieStore
-	templates    *template.Template
+	cookieName   string
+
+	oauth2Config *oauth2.Config
+	oauth2State  string
+
+	templates *template.Template
 }
 
 // New create new service
@@ -52,6 +58,30 @@ func SetAccountStore(accountStore yoblog.AccountStore) func(*Service) error {
 func SetCookieStore(secret []byte) func(*Service) error {
 	return func(s *Service) error {
 		s.cookieStore = sessions.NewCookieStore(secret)
+		return nil
+	}
+}
+
+// SetCookieName set name for cookie
+func SetCookieName(name string) func(*Service) error {
+	return func(s *Service) error {
+		s.cookieName = name
+		return nil
+	}
+}
+
+// SetOAuth2Config ...
+func SetOAuth2Config(cfg *oauth2.Config) func(*Service) error {
+	return func(s *Service) error {
+		s.oauth2Config = cfg
+		return nil
+	}
+}
+
+// SetOAuth2State ...
+func SetOAuth2State(state string) func(*Service) error {
+	return func(s *Service) error {
+		s.oauth2State = state
 		return nil
 	}
 }
