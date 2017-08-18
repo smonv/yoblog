@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS post (
 `
 
 func main() {
-	db, err := sqlx.Connect("postgres", "host=127.0.0.1 user=postgres password=123456 dbname=postgres sslmode=disable ")
+	db, err := sqlx.Connect("postgres", "host=postgres user=postgres password=123456 dbname=postgres sslmode=disable ")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -90,7 +90,7 @@ func main() {
 
 	httpSrv := &http.Server{
 		Handler: r,
-		Addr:    "127.0.0.1:8080",
+		Addr:    ":8080",
 
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
