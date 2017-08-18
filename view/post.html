@@ -1,0 +1,27 @@
+{{define "post"}}
+{{template "header" .}}
+<div class="container">
+	<div>
+		<h1>{{.post.Title}}</h1>
+		<h6>Author: {{.post.OwnerName}}</h6>
+		<p>{{.post.Content}}</p>
+	</div>
+	<div>
+		<h4>Comment</h4>
+		{{range .comments}}
+		<h5>{{.OwnerName}}</h5>
+		<p>{{.Content}}</p>
+		{{end}}
+		{{if .isAuthenticated}}
+		<form action="/posts/{{.post.ID}}/comment" method="POST" accept-charset="utf-8">
+			<input type="hidden" name="user_id" id="user_id" value="{{.userID}}" />
+			<div class="form-group">
+				<textarea name="content" id="content" rows="4" class="form-control"></textarea>
+			</div>
+			<button class="btn btn-primary" type="submit">Submit</button>
+		</form>
+		{{end}}
+	</div>
+</div>
+{{template "footer" .}}
+{{end}}

@@ -43,6 +43,7 @@ func New(options ...func(*Service) error) (*Service, error) {
 		"view/index.html",
 		"view/posts.html",
 		"view/new_post.html",
+		"view/post.html",
 	)
 	if err != nil {
 		return nil, err

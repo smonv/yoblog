@@ -76,6 +76,28 @@ func Test_Post(t *testing.T) {
 		}
 	})
 
+	comment := &yoblog.Comment{
+		OwnerID: account.ID,
+		PostID:  post.ID,
+		Content: "Lorem Ipsum",
+	}
+	t.Run("CreateComment", func(t *testing.T) {
+		_, err := postStore.CreateComment(comment)
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	t.Run("GetPostComments", func(t *testing.T) {
+		comments, err := postStore.GetPostComments(post.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(comments) <= 0 {
+			t.Fatal("Expected not empty")
+		}
+	})
+
 	t.Run("Delete", func(t *testing.T) {
 		err := postStore.Delete(post.ID)
 		if err != nil {

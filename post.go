@@ -17,4 +17,7 @@ type PostStore interface {
 	GetByOwnerID(ownerID string) (posts []Post, err error)
 	GetAll() (posts []Post, err error)
 	Delete(id string) (err error)
+
+	CreateComment(comment *Comment) (commentID string, err error)
+	GetPostComments(postID string) (comments []Comment, err error)
 }

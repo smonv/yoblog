@@ -91,6 +91,16 @@ func (s PostStore) Delete(id string) (err error) {
 		return err
 	}
 
+	_, err = tx.Exec("DELETE FROM comment WHERE comment.post_id = $1", id)
+	if err != nil {
+		sErr := tx.Rollback()
+		if sErr != nil {
+			return sErr
+		}
+
+		return err
+	}
+
 	_, err = tx.Exec("DELETE FROM post WHERE id = $1", id)
 	if err != nil {
 		sErr := tx.Rollback()
@@ -102,4 +112,53 @@ func (s PostStore) Delete(id string) (err error) {
 	}
 
 	return nil
+}
+
+func (s PostStore) CreateComment(comment *yoblog.Comment) (commentID string, err error) {
+	comment.ID = uuid.NewV4().String()
+
+	now := time.Now()
+
+	comment.CreatedAt = now.Unix()
+	comment.UpdatedAt = now.Unix()
+
+	tx, err := s.db.Begin()
+	if err != nil {
+		return "", err
+	}
+
+	_, err = tx.Exec(
+		"INSERT INTO comment VALUES($1, $2, $3, $4, $5, $6)",
+		comment.ID,
+		comment.OwnerID,
+		comment.PostID,
+		comment.Content,
+		comment.CreatedAt,
+		comment.UpdatedAt,
+	)
+	if err != nil {
+		sErr := tx.Rollback()
+		if sErr != nil {
+			return "", sErr
+		}
+
+		return "", err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return "", err
+	}
+
+	return comment.ID, nil
+}
+
+func (s PostStore) GetPostComments(postID string) (comments []yoblog.Comment, err error) {
+	err = s.db.Select(
+		&comments,
+		"SELECT account.name, comment.* FROM comment INNER JOIN account ON comment.owner_id = account.id WHERE comment.post_id = $1",
+		postID,
+	)
+
+	return
 }

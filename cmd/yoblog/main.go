@@ -33,7 +33,16 @@ CREATE TABLE IF NOT EXISTS post (
 	content TEXT,
 	created_at INTEGER,
 	updated_at INTEGER
-)
+);
+
+CREATE TABLE IF NOT EXISTS comment (
+	id CHAR(36) PRIMARY KEY,
+	owner_id CHAR(36) REFERENCES account (id),
+	post_id CHAR(36) REFERENCES post (id),
+	content TEXT,
+	created_at INTEGER,
+	updated_at INTEGER
+);
 `
 
 func main() {
@@ -87,6 +96,8 @@ func main() {
 	r.HandleFunc("/accounts/{aid}/posts", service.RequireAuthentication(srv, srv.AccountPostsHandler)).Methods("GET")
 	r.HandleFunc("/posts/create", service.RequireAuthentication(srv, srv.NewPostHandler)).Methods("GET")
 	r.HandleFunc("/posts/create", service.RequireAuthentication(srv, srv.CreatePostHandler)).Methods("POST")
+	r.HandleFunc("/posts/{pid}", srv.ViewPostHandler).Methods("GET")
+	r.HandleFunc("/posts/{pid}/comment", service.RequireAuthentication(srv, srv.CreateCommentHandler)).Methods("POST")
 
 	httpSrv := &http.Server{
 		Handler: r,
